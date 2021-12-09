@@ -15,8 +15,14 @@ async function main() {
     console.log(`====================Do your bussiness =======================`)
     // pairFor
     let veniceFactory = await ethers.getContractAt('VeniceFactory', FACTORY_ADDRESS);
-    let pairAddress = await veniceFactory.getPair(TOKENS['USDT'][network.name], TOKENS['BUSD'][network.name]);
+    let pairAddress = await veniceFactory.getPair(TOKENS['FRA'][network.name], TOKENS['USDT'][network.name]);
     console.log('usdt-busd pair address is:', pairAddress);
+
+    // reserve
+    let venicePair = await ethers.getContractAt('VenicePair', pairAddress);
+    let reserves = await venicePair.getReserves();
+    console.log('reserve0 is:', reserves[0].toString());
+    console.log('reserve1 is:', reserves[1].toString());
 }
 
 main()
