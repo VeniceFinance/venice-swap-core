@@ -109,8 +109,6 @@ contract VenicePair is IVenicePair, VeniceERC20 {
     // this low-level function should be called from a contract which performs important safety checks
     function mint(address to) external lock returns (uint liquidity) {
         (uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings
-        // uint balance0 = IERC20(token0).balanceOf(address(this));
-        // uint balance1 = IERC20(token1).balanceOf(address(this));
         uint balance0 = BalanceHelper.safeBalanceOf(token0, address(this));
         uint balance1 = BalanceHelper.safeBalanceOf(token1, address(this));
         uint amount0 = balance0.sub(_reserve0);
@@ -137,8 +135,6 @@ contract VenicePair is IVenicePair, VeniceERC20 {
         (uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings
         address _token0 = token0;                                // gas savings
         address _token1 = token1;                                // gas savings
-        // uint balance0 = IERC20(_token0).balanceOf(address(this));
-        // uint balance1 = IERC20(_token1).balanceOf(address(this));
         uint balance0 = BalanceHelper.safeBalanceOf(token0, address(this));
         uint balance1 = BalanceHelper.safeBalanceOf(token1, address(this));
         uint liquidity = balanceOf[address(this)];
@@ -151,8 +147,6 @@ contract VenicePair is IVenicePair, VeniceERC20 {
         _burn(address(this), liquidity);
         _safeTransfer(_token0, to, amount0);
         _safeTransfer(_token1, to, amount1);
-        // balance0 = IERC20(_token0).balanceOf(address(this));
-        // balance1 = IERC20(_token1).balanceOf(address(this));
         balance0 = BalanceHelper.safeBalanceOf(token0, address(this));
         balance1 = BalanceHelper.safeBalanceOf(token1, address(this));
 
@@ -176,8 +170,6 @@ contract VenicePair is IVenicePair, VeniceERC20 {
         if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
         if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
         if (data.length > 0) IVeniceCallee(to).veniceCall(msg.sender, amount0Out, amount1Out, data);
-        // balance0 = IERC20(_token0).balanceOf(address(this));
-        // balance1 = IERC20(_token1).balanceOf(address(this));
         balance0 = BalanceHelper.safeBalanceOf(token0, address(this));
         balance1 = BalanceHelper.safeBalanceOf(token1, address(this));
         }
@@ -198,8 +190,6 @@ contract VenicePair is IVenicePair, VeniceERC20 {
     function skim(address to) external lock {
         address _token0 = token0; // gas savings
         address _token1 = token1; // gas savings
-        // _safeTransfer(_token0, to, IERC20(_token0).balanceOf(address(this)).sub(reserve0));
-        // _safeTransfer(_token1, to, IERC20(_token1).balanceOf(address(this)).sub(reserve1));
         _safeTransfer(_token0, to, BalanceHelper.safeBalanceOf(token0, address(this)).sub(reserve0));
         _safeTransfer(_token1, to, BalanceHelper.safeBalanceOf(token1, address(this)).sub(reserve1));
     }
@@ -207,8 +197,6 @@ contract VenicePair is IVenicePair, VeniceERC20 {
     // force reserves to match balances
     function sync() external lock {
         _update(
-            // IERC20(token0).balanceOf(address(this)), 
-            // IERC20(token1).balanceOf(address(this)), 
             BalanceHelper.safeBalanceOf(token0, address(this)),
             BalanceHelper.safeBalanceOf(token1, address(this)),
             reserve0, 
